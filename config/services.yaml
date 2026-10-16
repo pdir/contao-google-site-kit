@@ -1,0 +1,41 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            Symfony\Contracts\Cache\CacheInterface $cache: '@cache.app'
+            $cacheTtl: '%pdir_site_kit.cache_ttl%'
+            $adminsOnly: '%pdir_site_kit.dashboard.admins_only%'
+            $pageSpeedApiKey: '%pdir_site_kit.google.pagespeed_api_key%'
+
+    Pdir\SiteKitBundle\:
+        resource: ../src/
+        exclude:
+            - ../src/ContaoManager/
+            - ../src/PdirSiteKitBundle.php
+            - ../src/Google/Exception/
+            - ../src/Site/SiteConfig.php
+            - ../src/Dashboard/DateRange.php
+
+    Pdir\SiteKitBundle\Controller\:
+        resource: ../src/Controller/
+        tags: [controller.service_arguments]
+
+    Pdir\SiteKitBundle\Google\Crypto:
+        arguments:
+            $secret: '%kernel.secret%'
+
+    Pdir\SiteKitBundle\Google\CredentialProvider:
+        arguments:
+            $configuredClientId: '%pdir_site_kit.google.client_id%'
+            $configuredClientSecret: '%pdir_site_kit.google.client_secret%'
+
+    Pdir\SiteKitBundle\Site\SiteRepository:
+        arguments:
+            $cacheInvalidator: '@?fos_http_cache.cache_manager'
+
+    Pdir\SiteKitBundle\EventListener\TrackingSnippetListener:
+        arguments:
+            $cspHandlerFactory: '@contao.routing.response_context.csp_handler_factory'
+            $skipPreview: '%pdir_site_kit.tracking.skip_preview%'
+            $skipBackendUsers: '%pdir_site_kit.tracking.skip_backend_users%'

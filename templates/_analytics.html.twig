@@ -1,0 +1,52 @@
+{% trans_default_domain 'pdir_site_kit' %}
+<section class="sitekit-card">
+    <header class="sitekit-card__header">
+        <h2>{{ 'analytics.title'|trans }}</h2>
+        {% if card.state == 'ok' %}
+            <span class="sitekit-card__meta">{{ 'analytics.property'|trans({'%id%': card.property}) }} · {{ card.start|date('d.m.Y') }}–{{ card.end|date('d.m.Y') }}</span>
+        {% endif %}
+    </header>
+
+    {% if card.state != 'ok' %}
+        {{ include('@PdirSiteKit/_card_state.html.twig', {module: 'analytics'}) }}
+    {% else %}
+        {{ include('@PdirSiteKit/_kpis.html.twig', {kpis: card.kpis, prefix: 'analytics.kpi.'}) }}
+
+        {% if card.chart %}
+            {{ include('@PdirSiteKit/_chart.html.twig', {chart: card.chart, max: card.chartMax, label: 'analytics.chart'|trans}) }}
+        {% endif %}
+
+        <div class="sitekit-columns">
+            <div>
+                <h3>{{ 'analytics.top_pages'|trans }}</h3>
+                {% if card.pages is empty %}
+                    <p class="sitekit-hint">{{ 'card.no_data'|trans }}</p>
+                {% else %}
+                    <table class="sitekit-table">
+                        <thead><tr><th>{{ 'analytics.page'|trans }}</th><th>{{ 'analytics.kpi.screenPageViews'|trans }}</th><th>{{ 'analytics.kpi.activeUsers'|trans }}</th></tr></thead>
+                        <tbody>
+                            {% for row in card.pages %}
+                                <tr><td>{{ row.label }}</td><td>{{ row.views }}</td><td>{{ row.users }}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+            <div>
+                <h3>{{ 'analytics.channels'|trans }}</h3>
+                {% if card.channels is empty %}
+                    <p class="sitekit-hint">{{ 'card.no_data'|trans }}</p>
+                {% else %}
+                    <table class="sitekit-table">
+                        <thead><tr><th>{{ 'analytics.channel'|trans }}</th><th>{{ 'analytics.kpi.sessions'|trans }}</th><th>{{ 'analytics.kpi.activeUsers'|trans }}</th></tr></thead>
+                        <tbody>
+                            {% for row in card.channels %}
+                                <tr><td>{{ row.label }}</td><td>{{ row.sessions }}</td><td>{{ row.users }}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</section>

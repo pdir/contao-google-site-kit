@@ -1,0 +1,13 @@
+{% trans_default_domain 'pdir_site_kit' %}
+{# Shown instead of a report when it cannot be loaded. Expects "card" and "module". #}
+{% if card.state == 'unconfigured' %}
+    <p class="sitekit-hint">{{ (module ~ '.unconfigured')|trans }}{% if is_admin %} <a href="{{ path('pdir_site_kit_settings') }}#site-{{ site.rootId }}" data-turbo="false">{{ 'setup.open_settings'|trans }}</a>{% endif %}</p>
+{% elseif card.state == 'missing_scope' %}
+    <p class="sitekit-hint">{{ 'card.missing_scope'|trans }}</p>
+{% elseif card.state == 'not_connected' %}
+    <p class="sitekit-flash sitekit-flash--error">{{ 'card.not_connected'|trans }}</p>
+{% elseif card.state == 'permission' %}
+    <p class="sitekit-flash sitekit-flash--error">{{ 'card.permission'|trans }}<br><small>{{ card.error }}</small></p>
+{% elseif card.state == 'error' %}
+    <p class="sitekit-flash sitekit-flash--error">{{ 'card.error'|trans }}<br><small>{{ card.error }}</small></p>
+{% endif %}

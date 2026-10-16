@@ -1,0 +1,55 @@
+{% trans_default_domain 'pdir_site_kit' %}
+{% if error is defined %}
+    <p class="sitekit-flash sitekit-flash--error">
+        {% if error == 'invalid_url' %}
+            {{ 'pagespeed.invalid_url'|trans({'%host%': allowed_host}) }}
+        {% elseif error == 'quota' %}
+            {{ (has_api_key ? 'pagespeed.quota_own' : 'pagespeed.quota_shared')|trans }}<br><small>{{ message }}</small>
+        {% else %}
+            {{ 'pagespeed.error'|trans }}<br><small>{{ message }}</small>
+        {% endif %}
+    </p>
+{% else %}
+    <div class="sitekit-psi">
+        <div class="sitekit-psi__score sitekit-psi__score--{{ result.rating }}">
+            <span>{{ result.score ?? '–' }}</span>
+            <small>{{ ('pagespeed.' ~ result.strategy)|trans }}</small>
+        </div>
+        <div class="sitekit-psi__metrics">
+            <h3>{{ 'pagespeed.field'|trans }}</h3>
+            {% if result.field is empty %}
+                <p class="sitekit-hint">{{ 'pagespeed.no_field_data'|trans }}</p>
+            {% else %}
+                {% if result.fieldIsOrigin %}<p class="sitekit-hint">{{ 'pagespeed.origin_data'|trans }}</p>{% endif %}
+                <ul class="sitekit-metrics">
+                    {% for metric in result.field %}
+                        <li class="sitekit-metric sitekit-metric--{{ metric.rating }}"><abbr>{{ metric.id }}</abbr> <strong>{{ metric.value }}</strong></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <h3>{{ 'pagespeed.lab'|trans }}</h3>
+            <ul class="sitekit-metrics">
+                {% for metric in result.lab %}
+                    <li class="sitekit-metric sitekit-metric--{{ metric.rating }}" title="{{ metric.title }}"><abbr>{{ metric.id }}</abbr> <strong>{{ metric.value }}</strong></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    {% if result.opportunities is not empty %}
+        <h3>{{ 'pagespeed.opportunities'|trans }}</h3>
+        <table class="sitekit-table">
+            <tbody>
+                {% for item in result.opportunities %}
+                    <tr><td>{{ item.title }}</td><td>{{ 'pagespeed.savings'|trans({'%seconds%': (item.savings / 1000)|number_format(1, ',', '.')}) }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <p class="sitekit-hint">
+        {{ result.url }}{% if result.fetchedAt %} · {{ result.fetchedAt|date('d.m.Y H:i') }}{% endif %}
+        · <a href="https://pagespeed.web.dev/analysis?url={{ result.url|url_encode }}" target="_blank" rel="noopener noreferrer">{{ 'pagespeed.full_report'|trans }}</a>
+    </p>
+{% endif %}

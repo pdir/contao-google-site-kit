@@ -1,0 +1,93 @@
+{% extends "@Contao/be_main" %}
+{% trans_default_domain 'pdir_site_kit' %}
+
+{% block main_content %}
+<div class="sitekit" data-sitekit>
+    {{ include('@PdirSiteKit/_flashes.html.twig') }}
+
+    {% if not has_credentials or not is_connected %}
+        <section class="sitekit-notice">
+            <h2>{{ 'setup.title'|trans }}</h2>
+            {% if not has_credentials %}
+                <p>{{ 'setup.no_credentials'|trans }}</p>
+            {% else %}
+                <p>{{ 'setup.not_connected'|trans }}</p>
+            {% endif %}
+            {% if is_admin %}
+                <p><a class="tl_submit" href="{{ path('pdir_site_kit_settings') }}" data-turbo="false">{{ 'setup.open_settings'|trans }}</a></p>
+            {% else %}
+                <p>{{ 'setup.ask_admin'|trans }}</p>
+            {% endif %}
+        </section>
+    {% endif %}
+
+    {% if sites is empty %}
+        <p class="sitekit-empty">{{ 'dashboard.no_sites'|trans }}</p>
+    {% else %}
+        <form class="sitekit-toolbar" method="get" action="{{ path('pdir_site_kit_dashboard') }}" data-turbo="false">
+            <label>
+                <span>{{ 'dashboard.website'|trans }}</span>
+                <select name="site" class="tl_select" data-sitekit-autosubmit>
+                    {% for s in sites %}
+                        <option value="{{ s.rootId }}"{% if site and s.rootId == site.rootId %} selected{% endif %}>{{ s.label }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>
+                <span>{{ 'dashboard.period'|trans }}</span>
+                <select name="days" class="tl_select" data-sitekit-autosubmit>
+                    {% for d in allowed_days %}
+                        <option value="{{ d }}"{% if d == days %} selected{% endif %}>{{ 'dashboard.last_days'|trans({'%days%': d}) }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <noscript><button type="submit" class="tl_submit">{{ 'dashboard.apply'|trans }}</button></noscript>
+            <span class="sitekit-toolbar__actions">
+                {% if is_connected and site %}
+                    <a href="{{ path('pdir_site_kit_dashboard', {site: site.rootId, days: days, refresh: 1}) }}" data-turbo="false">{{ 'dashboard.refresh'|trans }}</a>
+                {% endif %}
+                {% if is_admin %}
+                    <a href="{{ path('pdir_site_kit_settings') }}{% if site %}#site-{{ site.rootId }}{% endif %}" data-turbo="false">{{ 'settings.title'|trans }}</a>
+                {% endif %}
+            </span>
+        </form>
+
+        {% if site %}
+            {% if tracking %}
+                <p class="sitekit-status">
+                    {% if tracking.active %}
+                        <span class="sitekit-dot sitekit-dot--good"></span>
+                        {{ 'dashboard.tracking_active'|trans }}
+                        {% if tracking.measurement_id %}<code>{{ tracking.measurement_id }}</code>{% endif %}
+                        {% if tracking.container_id %}<code>{{ tracking.container_id }}</code>{% endif %}
+                        · {{ ('consent.' ~ tracking.consent)|trans }}
+                    {% else %}
+                        <span class="sitekit-dot"></span>
+                        {{ 'dashboard.tracking_inactive'|trans }}
+                    {% endif %}
+                </p>
+            {% endif %}
+
+            {% if reports %}
+                {{ include('@PdirSiteKit/_search_console.html.twig', {card: reports.searchConsole}) }}
+                {{ include('@PdirSiteKit/_analytics.html.twig', {card: reports.analytics}) }}
+            {% endif %}
+
+            <section class="sitekit-card" data-sitekit-pagespeed data-endpoint="{{ path('pdir_site_kit_pagespeed') }}" data-site="{{ site.rootId }}">
+                <header class="sitekit-card__header">
+                    <h2>{{ 'pagespeed.title'|trans }}</h2>
+                    <span class="sitekit-card__meta">{{ 'pagespeed.meta'|trans }}</span>
+                </header>
+                <form class="sitekit-pagespeed-form" data-sitekit-pagespeed-form data-turbo="false">
+                    <input type="url" name="url" class="tl_text" value="{{ pagespeed_url }}" required aria-label="{{ 'pagespeed.url'|trans }}">
+                    <button type="submit" class="tl_submit" name="strategy" value="mobile">{{ 'pagespeed.mobile'|trans }}</button>
+                    <button type="submit" class="tl_submit" name="strategy" value="desktop">{{ 'pagespeed.desktop'|trans }}</button>
+                </form>
+                <div class="sitekit-pagespeed-result" data-sitekit-pagespeed-result aria-live="polite" data-loading-text="{{ 'pagespeed.loading'|trans }}">
+                    <p class="sitekit-hint">{{ 'pagespeed.intro'|trans }}</p>
+                </div>
+            </section>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

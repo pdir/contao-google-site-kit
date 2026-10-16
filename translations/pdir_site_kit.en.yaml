@@ -1,0 +1,154 @@
+headline: Site Kit
+menu:
+    label: Site Kit
+    title: Google Search Console, Analytics and PageSpeed
+
+setup:
+    title: Set up Site Kit
+    no_credentials: No Google OAuth client has been configured yet. Create a client in the Google Cloud console and enter it in the settings.
+    not_connected: Site Kit is not connected to a Google account yet.
+    open_settings: Open settings
+    ask_admin: Please contact an administrator.
+
+dashboard:
+    no_sites: There is no website root page in the site structure yet.
+    website: Website
+    period: Period
+    last_days: Last %days% days
+    apply: Show
+    refresh: Reload data
+    tracking_active: Tracking code active
+    tracking_inactive: No tracking code active
+
+consent:
+    denied: Consent mode – denied by default
+    granted: Consent mode – granted by default
+
+card:
+    missing_scope: The permission for this report is missing. Reconnect the Google account in the settings and allow all requested access.
+    not_connected: The connection to Google has been lost. Please reconnect the account in the settings.
+    permission: The connected Google account has no access to this property.
+    error: The data could not be loaded.
+    no_data: There is no data for this period.
+    change_title: Change compared to the previous period
+    max: max.
+
+search_console:
+    title: Google Search Console
+    unconfigured: No Search Console property is set for this website.
+    chart: Clicks per day
+    top_queries: Top search queries
+    top_pages: Top pages
+    query: Query
+    page: Page
+    kpi:
+        clicks: Clicks
+        impressions: Impressions
+        ctr: CTR
+        position: Avg. position
+
+analytics:
+    title: Google Analytics 4
+    property: Property %id%
+    unconfigured: No GA4 property is set for this website.
+    chart: Active users per day
+    top_pages: Most viewed pages
+    page: Page
+    channels: Traffic by channel
+    channel: Channel
+    kpi:
+        activeUsers: Active users
+        sessions: Sessions
+        screenPageViews: Views
+        engagementRate: Engagement rate
+        averageSessionDuration: Avg. session duration
+
+pagespeed:
+    title: PageSpeed Insights
+    meta: Core Web Vitals and Lighthouse
+    url: URL to test
+    mobile: Test mobile
+    desktop: Test desktop
+    loading: Testing the page. This takes about 10 to 30 seconds …
+    intro: Measure how fast a page loads. Field data comes from real Chrome users (CrUX), lab data from a Lighthouse test.
+    invalid_url: Only pages of %host% can be tested.
+    error: PageSpeed Insights reported an error.
+    quota_shared: The shared daily quota for requests without an API key is used up. Add your own API key for the PageSpeed Insights API (environment variable SITEKIT_PAGESPEED_API_KEY or pdir_site_kit.google.pagespeed_api_key) to get a quota of your own.
+    quota_own: The daily quota of your PageSpeed Insights API key is used up. Check the project's quotas in the Google Cloud console or try again tomorrow.
+    field: Field data (real users, 28 days)
+    no_field_data: There is not enough field data for this page yet.
+    origin_data: Showing the values of the whole domain because there is too little data for this page alone.
+    lab: Lab data (Lighthouse)
+    opportunities: Biggest opportunities
+    savings: approx. %seconds% s
+    full_report: Full report
+
+settings:
+    title: Settings
+    back: Back to the dashboard
+    save: Save
+    saved: The settings have been saved.
+    site_saved: The settings for "%site%" have been saved.
+    invalid_client_id: The client ID must end with .apps.googleusercontent.com.
+    invalid_property: The GA4 property ID may only contain digits.
+    invalid_gsc_property: 'The Search Console property must start with "sc-domain:" or "http(s)://".'
+    invalid_gsc_verification: 'Please enter the file name of the Search Console verification file, e.g. google8bfe7b6619fd8ee1.html.'
+    invalid_measurement_id: The measurement ID must have the format G-XXXXXXXXXX.
+    invalid_container_id: The container ID must have the format GTM-XXXXXXX.
+    credentials:
+        title: Google Cloud access
+        external: The OAuth credentials are set in the configuration (environment variables).
+        step_project: Open the <a href="https://console.cloud.google.com/projectcreate" target="_blank" rel="noopener noreferrer">Google Cloud console</a> and create a project (or select an existing one).
+        step_apis: Under "APIs &amp; Services", enable the <em>Google Search Console API</em>, the <em>Google Analytics Data API</em> and the <em>Google Analytics Admin API</em>, and for the automatic verification of websites the <em>Google Site Verification API</em>.
+        step_consent: Set up the <a href="https://console.cloud.google.com/auth/overview" target="_blank" rel="noopener noreferrer">Google Auth Platform</a> (OAuth consent screen) and set the publishing status to "In production". In "Testing", access expires after 7 days.
+        step_client: Under "Clients", create an OAuth client of type "Web application", add the redirect URI below and copy the client ID and client secret here.
+        redirect_uri: Authorized redirect URI
+        https_required: Google only accepts HTTPS addresses (except localhost). Open the back end via HTTPS.
+        client_id: Client ID
+        client_secret: Client secret
+        secret_stored: Stored – enter again to change
+        env_hint: Alternatively, set <code>SITEKIT_GOOGLE_CLIENT_ID</code> and <code>SITEKIT_GOOGLE_CLIENT_SECRET</code> in your <code>.env.local</code> (see README). The secret is stored encrypted.
+    connection:
+        title: Connect Google account
+        intro: Sign in with the Google account that has access to Search Console and Analytics of your websites. Site Kit only requests read access.
+        connect: Sign in with Google
+        reconnect: Reconnect
+        disconnect: Disconnect
+        disconnect_confirm: Do you really want to disconnect from Google? The tracking code stays active.
+        connected: Connected as %email%
+        needs_credentials: Enter the Google Cloud access first.
+    sites:
+        title: Websites
+        reload: Reload properties
+        manual_hint: Without a Google connection you can enter the IDs manually. The tracking code works without a connection.
+        gsc_property: Search Console property
+        gsc_verification: Search Console verification (HTML file)
+        gsc_verification_hint: 'Optional: file name of the verification file from Search Console. Site Kit serves the file, there is nothing to upload.'
+        gsc_verification_active: 'The verification file is available at'
+        gsc_verify: 'Verify with Google (%url%)'
+        gsc_verify_hint: 'Requests the verification file from Google, has the website verified and adds it to Search Console. Unsaved changes in this form are lost.'
+        gsc_verify_scopes_hint: 'Google asks once for additional permissions (verify websites and manage Search Console properties). The reports stay read-only.'
+        gsc_verify_no_domain: 'Automatic verification requires a domain name in the root page.'
+        ga4_property: GA4 property (reports)
+        no_access: no access
+        measurement_id: GA4 measurement ID (tracking)
+        measurement_hint: If empty, the measurement ID of the selected property's data stream is looked up.
+        gtm_container: Tag Manager container
+        gtm_hint: If GA4 is already set up in the container, leave the measurement ID empty to avoid double counting.
+        tracking: Output the tracking code on this website
+        consent: Consent Mode v2
+        consent_hint: With "denied", your cookie banner has to call gtag('consent', 'update', …) after consent was given.
+
+verification:
+    done: 'The website %url% has been verified with Google and added to Search Console.'
+    failed: 'The verification with Google failed: %error%'
+    missing_scopes: 'Permissions for the verification are missing. Click “Verify with Google” again and allow all requested access.'
+
+oauth:
+    no_credentials: Please enter the client ID and client secret first.
+    invalid_state: The Google sign-in has expired or is invalid. Please try again.
+    denied: 'Google cancelled the sign-in (%error%).'
+    failed: 'Connecting to Google failed: %error%'
+    missing_scopes: Not all access was allowed. Reconnect and tick all checkboxes, otherwise reports are missing.
+    connected: Site Kit is now connected to %email%.
+    disconnected: Google has been disconnected.

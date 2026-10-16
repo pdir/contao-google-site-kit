@@ -1,0 +1,206 @@
+{% extends "@Contao/be_main" %}
+{% trans_default_domain 'pdir_site_kit' %}
+
+{% block main_content %}
+<div class="sitekit" data-sitekit>
+    <p class="sitekit-back"><a href="{{ path('pdir_site_kit_dashboard') }}" data-turbo="false">← {{ 'settings.back'|trans }}</a></p>
+
+    {{ include('@PdirSiteKit/_flashes.html.twig') }}
+
+    {# Step 1: Google Cloud OAuth client #}
+    <section class="sitekit-card">
+        <header class="sitekit-card__header">
+            <h2><span class="sitekit-step{% if has_credentials %} sitekit-step--done{% endif %}">1</span> {{ 'settings.credentials.title'|trans }}</h2>
+        </header>
+
+        {% if credentials_external %}
+            <p>{{ 'settings.credentials.external'|trans }}</p>
+            <p><code>{{ client_id }}</code></p>
+        {% else %}
+            <ol class="sitekit-steps">
+                <li>{{ 'settings.credentials.step_project'|trans|raw }}</li>
+                <li>{{ 'settings.credentials.step_apis'|trans|raw }}</li>
+                <li>{{ 'settings.credentials.step_consent'|trans|raw }}</li>
+                <li>{{ 'settings.credentials.step_client'|trans|raw }}</li>
+            </ol>
+        {% endif %}
+
+        <div class="sitekit-copy">
+            <label for="sitekit-redirect">{{ 'settings.credentials.redirect_uri'|trans }}</label>
+            <input id="sitekit-redirect" class="tl_text" type="text" readonly value="{{ redirect_uri }}" data-sitekit-select-on-focus>
+            {% if not (redirect_uri starts with 'https://') %}
+                <p class="sitekit-flash sitekit-flash--error">{{ 'settings.credentials.https_required'|trans }}</p>
+            {% endif %}
+        </div>
+
+        {% if not credentials_external %}
+            <form method="post" action="{{ path('pdir_site_kit_settings_credentials') }}" class="sitekit-form" data-turbo="false" autocomplete="off">
+                <input type="hidden" name="REQUEST_TOKEN" value="{{ contao.request_token }}">
+                <div class="sitekit-field">
+                    <label for="sitekit-client-id">{{ 'settings.credentials.client_id'|trans }}</label>
+                    <input id="sitekit-client-id" class="tl_text" type="text" name="client_id" value="{{ client_id }}" placeholder="1234567890-abc.apps.googleusercontent.com" spellcheck="false">
+                </div>
+                <div class="sitekit-field">
+                    <label for="sitekit-client-secret">{{ 'settings.credentials.client_secret'|trans }}</label>
+                    <input id="sitekit-client-secret" class="tl_text" type="password" name="client_secret" value="" placeholder="{{ has_secret ? 'settings.credentials.secret_stored'|trans : 'GOCSPX-…' }}" spellcheck="false">
+                </div>
+                <p class="sitekit-hint">{{ 'settings.credentials.env_hint'|trans|raw }}</p>
+                <button type="submit" class="tl_submit">{{ 'settings.save'|trans }}</button>
+            </form>
+        {% endif %}
+    </section>
+
+    {# Step 2: connect the Google account #}
+    <section class="sitekit-card">
+        <header class="sitekit-card__header">
+            <h2><span class="sitekit-step{% if is_connected %} sitekit-step--done{% endif %}">2</span> {{ 'settings.connection.title'|trans }}</h2>
+        </header>
+
+        {% if is_connected %}
+            <p><span class="sitekit-dot sitekit-dot--good"></span> {{ 'settings.connection.connected'|trans({'%email%': account_email ?: '?'}) }}</p>
+            {% set missing = required_scopes|filter(s => s not in granted_scopes and s not in ['openid', 'email']) %}
+            {% if missing is not empty %}
+                <p class="sitekit-flash sitekit-flash--error">{{ 'oauth.missing_scopes'|trans }}</p>
+            {% endif %}
+            <div class="sitekit-actions">
+                <form method="post" action="{{ path('pdir_site_kit_connect') }}" data-turbo="false">
+                    <input type="hidden" name="REQUEST_TOKEN" value="{{ contao.request_token }}">
+                    <button type="submit" class="tl_submit">{{ 'settings.connection.reconnect'|trans }}</button>
+                </form>
+                <form method="post" action="{{ path('pdir_site_kit_disconnect') }}" data-turbo="false" data-sitekit-confirm="{{ 'settings.connection.disconnect_confirm'|trans }}">
+                    <input type="hidden" name="REQUEST_TOKEN" value="{{ contao.request_token }}">
+                    <button type="submit" class="tl_submit">{{ 'settings.connection.disconnect'|trans }}</button>
+                </form>
+            </div>
+        {% elseif has_credentials %}
+            <p>{{ 'settings.connection.intro'|trans }}</p>
+            <form method="post" action="{{ path('pdir_site_kit_connect') }}" data-turbo="false">
+                <input type="hidden" name="REQUEST_TOKEN" value="{{ contao.request_token }}">
+                <button type="submit" class="tl_submit sitekit-google-button">{{ 'settings.connection.connect'|trans }}</button>
+            </form>
+        {% else %}
+            <p class="sitekit-hint">{{ 'settings.connection.needs_credentials'|trans }}</p>
+        {% endif %}
+    </section>
+
+    {# Step 3: websites #}
+    <section class="sitekit-card">
+        <header class="sitekit-card__header">
+            <h2><span class="sitekit-step">3</span> {{ 'settings.sites.title'|trans }}</h2>
+            {% if is_connected %}
+                <a class="sitekit-card__meta" href="{{ path('pdir_site_kit_settings', {refresh: 1}) }}" data-turbo="false">{{ 'settings.sites.reload'|trans }}</a>
+            {% endif %}
+        </header>
+
+        {% for error in load_errors %}
+            <p class="sitekit-flash sitekit-flash--error">{{ error }}</p>
+        {% endfor %}
+
+        {% if not is_connected %}
+            <p class="sitekit-hint">{{ 'settings.sites.manual_hint'|trans }}</p>
+        {% endif %}
+
+        {% for site in sites %}
+            <form method="post" action="{{ path('pdir_site_kit_settings_site', {id: site.rootId}) }}" class="sitekit-form sitekit-site" id="site-{{ site.rootId }}" data-turbo="false">
+                <input type="hidden" name="REQUEST_TOKEN" value="{{ contao.request_token }}">
+                <h3>{{ site.label }}</h3>
+
+                <div class="sitekit-grid">
+                    <div class="sitekit-field">
+                        <label for="gsc-{{ site.rootId }}">{{ 'settings.sites.gsc_property'|trans }}</label>
+                        {% if gsc_properties is not empty %}
+                            <select id="gsc-{{ site.rootId }}" name="gsc_property" class="tl_select">
+                                <option value="">–</option>
+                                {% set found = false %}
+                                {% for p in gsc_properties %}
+                                    {% if p.siteUrl == site.searchConsoleProperty %}{% set found = true %}{% endif %}
+                                    <option value="{{ p.siteUrl }}"{% if p.siteUrl == site.searchConsoleProperty %} selected{% endif %}>{{ p.siteUrl }}</option>
+                                {% endfor %}
+                                {% if not found and site.searchConsoleProperty %}
+                                    <option value="{{ site.searchConsoleProperty }}" selected>{{ site.searchConsoleProperty }} ({{ 'settings.sites.no_access'|trans }})</option>
+                                {% endif %}
+                            </select>
+                        {% else %}
+                            <input id="gsc-{{ site.rootId }}" type="text" name="gsc_property" class="tl_text" value="{{ site.searchConsoleProperty }}" placeholder="sc-domain:{{ site.dns ?: 'example.com' }}">
+                        {% endif %}
+                    </div>
+
+                    <div class="sitekit-field">
+                        <label for="gscv-{{ site.rootId }}">{{ 'settings.sites.gsc_verification'|trans }}</label>
+                        <input id="gscv-{{ site.rootId }}" type="text" name="gsc_verification" class="tl_text" value="{{ site.searchConsoleVerification ? site.searchConsoleVerification ~ '.html' }}" placeholder="google1234567890abcdef.html" spellcheck="false">
+                        {% if site.verificationUrl %}
+                            <p class="sitekit-hint">{{ 'settings.sites.gsc_verification_active'|trans }} <a href="{{ site.verificationUrl }}" target="_blank" rel="noopener noreferrer">{{ site.verificationUrl }}</a></p>
+                        {% else %}
+                            <p class="sitekit-hint">{{ 'settings.sites.gsc_verification_hint'|trans }}</p>
+                        {% endif %}
+                        {% if is_connected and site.rootUrl %}
+                            {# Belongs to the form below the site form, so it is not the default button of the site form #}
+                            <button type="submit" class="tl_submit" form="verify-{{ site.rootId }}">{{ 'settings.sites.gsc_verify'|trans({'%url%': site.rootUrl}) }}</button>
+                            <p class="sitekit-hint">{{ (has_verification_scopes ? 'settings.sites.gsc_verify_hint' : 'settings.sites.gsc_verify_scopes_hint')|trans }}</p>
+                        {% elseif is_connected %}
+                            <p class="sitekit-hint">{{ 'settings.sites.gsc_verify_no_domain'|trans }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="sitekit-field">
+                        <label for="ga4-{{ site.rootId }}">{{ 'settings.sites.ga4_property'|trans }}</label>
+                        {% if ga4_properties is not empty %}
+                            <select id="ga4-{{ site.rootId }}" name="ga4_property" class="tl_select">
+                                <option value="">–</option>
+                                {% set found = false %}
+                                {% for p in ga4_properties %}
+                                    {% if p.id == site.analyticsProperty %}{% set found = true %}{% endif %}
+                                    <option value="{{ p.id }}"{% if p.id == site.analyticsProperty %} selected{% endif %}>{{ p.name }} ({{ p.account }}, {{ p.id }})</option>
+                                {% endfor %}
+                                {% if not found and site.analyticsProperty %}
+                                    <option value="{{ site.analyticsProperty }}" selected>{{ site.analyticsProperty }} ({{ 'settings.sites.no_access'|trans }})</option>
+                                {% endif %}
+                            </select>
+                        {% else %}
+                            <input id="ga4-{{ site.rootId }}" type="text" name="ga4_property" class="tl_text" value="{{ site.analyticsProperty }}" inputmode="numeric" placeholder="123456789">
+                        {% endif %}
+                    </div>
+
+                    <div class="sitekit-field">
+                        <label for="mid-{{ site.rootId }}">{{ 'settings.sites.measurement_id'|trans }}</label>
+                        <input id="mid-{{ site.rootId }}" type="text" name="ga4_measurement" class="tl_text" value="{{ site.measurementId }}" placeholder="G-XXXXXXXXXX">
+                        <p class="sitekit-hint">{{ 'settings.sites.measurement_hint'|trans }}</p>
+                    </div>
+
+                    <div class="sitekit-field">
+                        <label for="gtm-{{ site.rootId }}">{{ 'settings.sites.gtm_container'|trans }}</label>
+                        <input id="gtm-{{ site.rootId }}" type="text" name="gtm_container" class="tl_text" value="{{ site.tagManagerContainer }}" placeholder="GTM-XXXXXXX">
+                        <p class="sitekit-hint">{{ 'settings.sites.gtm_hint'|trans }}</p>
+                    </div>
+
+                    <div class="sitekit-field">
+                        <label class="sitekit-checkbox">
+                            <input type="checkbox" name="tracking" value="1"{% if site.trackingEnabled %} checked{% endif %}>
+                            {{ 'settings.sites.tracking'|trans }}
+                        </label>
+                    </div>
+
+                    <div class="sitekit-field">
+                        <label for="consent-{{ site.rootId }}">{{ 'settings.sites.consent'|trans }}</label>
+                        <select id="consent-{{ site.rootId }}" name="consent_default" class="tl_select">
+                            <option value="denied"{% if site.consentDefault == 'denied' %} selected{% endif %}>{{ 'consent.denied'|trans }}</option>
+                            <option value="granted"{% if site.consentDefault == 'granted' %} selected{% endif %}>{{ 'consent.granted'|trans }}</option>
+                        </select>
+                        <p class="sitekit-hint">{{ 'settings.sites.consent_hint'|trans }}</p>
+                    </div>
+                </div>
+
+                <button type="submit" class="tl_submit">{{ 'settings.save'|trans }}</button>
+            </form>
+            {% if is_connected and site.rootUrl %}
+                <form method="post" id="verify-{{ site.rootId }}" action="{{ has_verification_scopes ? path('pdir_site_kit_settings_verify', {id: site.rootId}) : path('pdir_site_kit_connect') }}" data-turbo="false" hidden>
+                    <input type="hidden" name="REQUEST_TOKEN" value="{{ contao.request_token }}">
+                    <input type="hidden" name="verify_site" value="{{ site.rootId }}">
+                </form>
+            {% endif %}
+        {% else %}
+            <p class="sitekit-hint">{{ 'dashboard.no_sites'|trans }}</p>
+        {% endfor %}
+    </section>
+</div>
+{% endblock %}

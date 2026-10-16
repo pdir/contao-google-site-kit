@@ -1,0 +1,154 @@
+headline: Site Kit
+menu:
+    label: Site Kit
+    title: Google Search Console, Analytics und PageSpeed
+
+setup:
+    title: Site Kit einrichten
+    no_credentials: Es ist noch kein Google-OAuth-Client hinterlegt. Legen Sie in der Google Cloud Console einen Client an und tragen Sie ihn in den Einstellungen ein.
+    not_connected: Site Kit ist noch nicht mit einem Google-Konto verbunden.
+    open_settings: Zu den Einstellungen
+    ask_admin: Bitte wenden Sie sich an einen Administrator.
+
+dashboard:
+    no_sites: Es gibt noch keinen Startpunkt einer Webseite in der Seitenstruktur.
+    website: Website
+    period: Zeitraum
+    last_days: Letzte %days% Tage
+    apply: Anzeigen
+    refresh: Daten neu laden
+    tracking_active: Tracking-Code aktiv
+    tracking_inactive: Kein Tracking-Code aktiv
+
+consent:
+    denied: Consent Mode – standardmäßig abgelehnt
+    granted: Consent Mode – standardmäßig erteilt
+
+card:
+    missing_scope: Für diesen Bericht fehlt die Berechtigung. Verbinden Sie das Google-Konto in den Einstellungen erneut und erlauben Sie alle angefragten Zugriffe.
+    not_connected: Die Verbindung zu Google besteht nicht mehr. Bitte verbinden Sie das Konto in den Einstellungen erneut.
+    permission: Das verbundene Google-Konto hat keinen Zugriff auf diese Property.
+    error: Die Daten konnten nicht geladen werden.
+    no_data: Für diesen Zeitraum liegen keine Daten vor.
+    change_title: Veränderung zum vorherigen Zeitraum
+    max: max.
+
+search_console:
+    title: Google Search Console
+    unconfigured: Für diese Website ist keine Search-Console-Property hinterlegt.
+    chart: Klicks pro Tag
+    top_queries: Top-Suchanfragen
+    top_pages: Top-Seiten
+    query: Suchanfrage
+    page: Seite
+    kpi:
+        clicks: Klicks
+        impressions: Impressionen
+        ctr: CTR
+        position: Ø Position
+
+analytics:
+    title: Google Analytics 4
+    property: Property %id%
+    unconfigured: Für diese Website ist keine GA4-Property hinterlegt.
+    chart: Aktive Nutzer pro Tag
+    top_pages: Meistaufgerufene Seiten
+    page: Seite
+    channels: Zugriffe nach Kanal
+    channel: Kanal
+    kpi:
+        activeUsers: Aktive Nutzer
+        sessions: Sitzungen
+        screenPageViews: Aufrufe
+        engagementRate: Engagement-Rate
+        averageSessionDuration: Ø Sitzungsdauer
+
+pagespeed:
+    title: PageSpeed Insights
+    meta: Core Web Vitals und Lighthouse
+    url: Zu prüfende URL
+    mobile: Mobil messen
+    desktop: Desktop messen
+    loading: Die Seite wird gemessen. Das dauert etwa 10 bis 30 Sekunden …
+    intro: Messen Sie die Ladezeit einer Seite. Die Felddaten stammen von echten Chrome-Nutzern (CrUX), die Labordaten aus einem Lighthouse-Test.
+    invalid_url: Es können nur Seiten von %host% gemessen werden.
+    error: PageSpeed Insights hat einen Fehler gemeldet.
+    quota_shared: Das gemeinsame Tageskontingent für Abfragen ohne API-Schlüssel ist aufgebraucht. Hinterlegen Sie einen eigenen API-Schlüssel für die PageSpeed Insights API (Umgebungsvariable SITEKIT_PAGESPEED_API_KEY bzw. pdir_site_kit.google.pagespeed_api_key), dann steht Ihnen ein eigenes Kontingent zur Verfügung.
+    quota_own: Das Tageskontingent Ihres API-Schlüssels für PageSpeed Insights ist aufgebraucht. Prüfen Sie die Kontingente des Projekts in der Google Cloud Console oder versuchen Sie es morgen erneut.
+    field: Felddaten (echte Nutzer, 28 Tage)
+    no_field_data: Für diese Seite gibt es noch nicht genug Felddaten.
+    origin_data: Es werden die Werte der gesamten Domain angezeigt, weil für die Seite allein zu wenige Daten vorliegen.
+    lab: Labordaten (Lighthouse)
+    opportunities: Größtes Optimierungspotenzial
+    savings: ca. %seconds% s
+    full_report: Vollständiger Bericht
+
+settings:
+    title: Einstellungen
+    back: Zurück zum Dashboard
+    save: Speichern
+    saved: Die Einstellungen wurden gespeichert.
+    site_saved: Die Einstellungen für „%site%“ wurden gespeichert.
+    invalid_client_id: Die Client-ID muss auf .apps.googleusercontent.com enden.
+    invalid_property: Die GA4-Property-ID darf nur aus Ziffern bestehen.
+    invalid_gsc_property: 'Die Search-Console-Property muss mit „sc-domain:“ oder „http(s)://“ beginnen.'
+    invalid_gsc_verification: 'Bitte geben Sie den Dateinamen der Search-Console-Bestätigungsdatei ein, z. B. google8bfe7b6619fd8ee1.html.'
+    invalid_measurement_id: Die Mess-ID muss das Format G-XXXXXXXXXX haben.
+    invalid_container_id: Die Container-ID muss das Format GTM-XXXXXXX haben.
+    credentials:
+        title: Google-Cloud-Zugang
+        external: Die OAuth-Zugangsdaten sind in der Konfiguration (Umgebungsvariablen) hinterlegt.
+        step_project: Öffnen Sie die <a href="https://console.cloud.google.com/projectcreate" target="_blank" rel="noopener noreferrer">Google Cloud Console</a> und legen Sie ein Projekt an (oder wählen Sie ein vorhandenes).
+        step_apis: Aktivieren Sie unter „APIs &amp; Dienste“ die <em>Google Search Console API</em>, die <em>Google Analytics Data API</em> und die <em>Google Analytics Admin API</em>, für die automatische Bestätigung von Websites außerdem die <em>Google Site Verification API</em>.
+        step_consent: Richten Sie die <a href="https://console.cloud.google.com/auth/overview" target="_blank" rel="noopener noreferrer">Google Auth Platform</a> (OAuth-Zustimmungsbildschirm) ein und stellen Sie den Status auf „In Produktion“. Im Status „Testen“ laufen die Freigaben nach 7 Tagen ab.
+        step_client: Legen Sie unter „Clients“ einen OAuth-Client vom Typ „Webanwendung“ an, tragen Sie die folgende Weiterleitungs-URI ein und kopieren Sie Client-ID und Clientschlüssel hierher.
+        redirect_uri: Autorisierte Weiterleitungs-URI
+        https_required: Google akzeptiert nur HTTPS-Adressen (Ausnahme localhost). Rufen Sie das Backend über HTTPS auf.
+        client_id: Client-ID
+        client_secret: Clientschlüssel
+        secret_stored: Gespeichert – zum Ändern neu eingeben
+        env_hint: Alternativ können Sie die Werte über <code>SITEKIT_GOOGLE_CLIENT_ID</code> und <code>SITEKIT_GOOGLE_CLIENT_SECRET</code> in der <code>.env.local</code> setzen (siehe README). Der Schlüssel wird verschlüsselt gespeichert.
+    connection:
+        title: Google-Konto verbinden
+        intro: Melden Sie sich mit dem Google-Konto an, das Zugriff auf die Search Console und Analytics Ihrer Websites hat. Site Kit fordert nur Lesezugriff an.
+        connect: Mit Google verbinden
+        reconnect: Erneut verbinden
+        disconnect: Verbindung trennen
+        disconnect_confirm: Die Verbindung zu Google wirklich trennen? Der Tracking-Code bleibt aktiv.
+        connected: Verbunden mit %email%
+        needs_credentials: Hinterlegen Sie zuerst den Google-Cloud-Zugang.
+    sites:
+        title: Websites
+        reload: Properties neu laden
+        manual_hint: Ohne Google-Verbindung können Sie die IDs auch von Hand eintragen. Der Tracking-Code funktioniert ohne Verbindung.
+        gsc_property: Search-Console-Property
+        gsc_verification: Search-Console-Bestätigung (HTML-Datei)
+        gsc_verification_hint: 'Optional: Dateiname der Bestätigungsdatei aus der Search Console. Site Kit liefert die Datei aus, Sie müssen nichts hochladen.'
+        gsc_verification_active: 'Die Bestätigungsdatei ist erreichbar unter'
+        gsc_verify: 'Bei Google bestätigen (%url%)'
+        gsc_verify_hint: 'Fordert die Bestätigungsdatei bei Google an, lässt die Website bestätigen und fügt sie der Search Console hinzu. Nicht gespeicherte Änderungen in diesem Formular gehen dabei verloren.'
+        gsc_verify_scopes_hint: 'Google fragt dabei einmalig nach zusätzlichen Berechtigungen (Websites bestätigen und Search-Console-Properties verwalten). Die Berichte bleiben schreibgeschützt.'
+        gsc_verify_no_domain: 'Für die automatische Bestätigung braucht der Startpunkt einen Domainnamen.'
+        ga4_property: GA4-Property (Berichte)
+        no_access: kein Zugriff
+        measurement_id: GA4-Mess-ID (Tracking)
+        measurement_hint: Bleibt das Feld leer, wird die Mess-ID des Datenstreams der gewählten Property ermittelt.
+        gtm_container: Tag-Manager-Container
+        gtm_hint: Ist GA4 schon im Container eingerichtet, lassen Sie die Mess-ID leer, sonst wird doppelt gezählt.
+        tracking: Tracking-Code auf dieser Website ausgeben
+        consent: Consent Mode v2
+        consent_hint: Bei „abgelehnt“ muss Ihr Cookie-Banner nach der Einwilligung gtag('consent', 'update', …) aufrufen.
+
+verification:
+    done: 'Die Website %url% wurde bei Google bestätigt und der Search Console hinzugefügt.'
+    failed: 'Die Bestätigung bei Google ist fehlgeschlagen: %error%'
+    missing_scopes: 'Für die Bestätigung fehlen Berechtigungen. Klicken Sie erneut auf „Bei Google bestätigen“ und erlauben Sie alle angefragten Zugriffe.'
+
+oauth:
+    no_credentials: Bitte hinterlegen Sie zuerst Client-ID und Clientschlüssel.
+    invalid_state: Die Anmeldung bei Google ist abgelaufen oder ungültig. Bitte versuchen Sie es erneut.
+    denied: 'Google hat die Anmeldung abgebrochen (%error%).'
+    failed: 'Die Verbindung zu Google ist fehlgeschlagen: %error%'
+    missing_scopes: Nicht alle Zugriffe wurden erlaubt. Verbinden Sie erneut und setzen Sie alle Häkchen, sonst fehlen Berichte.
+    connected: Site Kit ist jetzt mit %email% verbunden.
+    disconnected: Die Verbindung zu Google wurde getrennt.

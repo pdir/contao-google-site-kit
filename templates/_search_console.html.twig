@@ -1,0 +1,52 @@
+{% trans_default_domain 'pdir_site_kit' %}
+<section class="sitekit-card">
+    <header class="sitekit-card__header">
+        <h2>{{ 'search_console.title'|trans }}</h2>
+        {% if card.state == 'ok' %}
+            <span class="sitekit-card__meta">{{ card.property }} · {{ card.start|date('d.m.Y') }}–{{ card.end|date('d.m.Y') }}</span>
+        {% endif %}
+    </header>
+
+    {% if card.state != 'ok' %}
+        {{ include('@PdirSiteKit/_card_state.html.twig', {module: 'search_console'}) }}
+    {% else %}
+        {{ include('@PdirSiteKit/_kpis.html.twig', {kpis: card.kpis, prefix: 'search_console.kpi.'}) }}
+
+        {% if card.chart %}
+            {{ include('@PdirSiteKit/_chart.html.twig', {chart: card.chart, max: card.chartMax, label: 'search_console.chart'|trans}) }}
+        {% endif %}
+
+        <div class="sitekit-columns">
+            <div>
+                <h3>{{ 'search_console.top_queries'|trans }}</h3>
+                {% if card.queries is empty %}
+                    <p class="sitekit-hint">{{ 'card.no_data'|trans }}</p>
+                {% else %}
+                    <table class="sitekit-table">
+                        <thead><tr><th>{{ 'search_console.query'|trans }}</th><th>{{ 'search_console.kpi.clicks'|trans }}</th><th>{{ 'search_console.kpi.impressions'|trans }}</th><th>{{ 'search_console.kpi.position'|trans }}</th></tr></thead>
+                        <tbody>
+                            {% for row in card.queries %}
+                                <tr><td>{{ row.label }}</td><td>{{ row.clicks }}</td><td>{{ row.impressions }}</td><td>{{ row.position }}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+            <div>
+                <h3>{{ 'search_console.top_pages'|trans }}</h3>
+                {% if card.pages is empty %}
+                    <p class="sitekit-hint">{{ 'card.no_data'|trans }}</p>
+                {% else %}
+                    <table class="sitekit-table">
+                        <thead><tr><th>{{ 'search_console.page'|trans }}</th><th>{{ 'search_console.kpi.clicks'|trans }}</th><th>{{ 'search_console.kpi.impressions'|trans }}</th><th>{{ 'search_console.kpi.position'|trans }}</th></tr></thead>
+                        <tbody>
+                            {% for row in card.pages %}
+                                <tr><td><a href="{{ row.url }}" target="_blank" rel="noopener noreferrer" title="{{ row.url }}">{{ row.label }}</a></td><td>{{ row.clicks }}</td><td>{{ row.impressions }}</td><td>{{ row.position }}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</section>

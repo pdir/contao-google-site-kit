@@ -1,0 +1,3 @@
+{% for flash in flashes|default([]) %}
+    <p class="sitekit-flash sitekit-flash--{{ flash.type == 'error' ? 'error' : 'confirm' }}" role="{{ flash.type == 'error' ? 'alert' : 'status' }}">{{ flash.message }}</p>
+{% endfor %}

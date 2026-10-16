@@ -1,0 +1,52 @@
+{
+    "name": "pdir/contao-google-site-kit",
+    "description": "Google Site Kit for Contao: Search Console, Analytics 4, PageSpeed Insights and Tag Manager in the Contao back end.",
+    "keywords": ["contao", "google", "site kit", "search console", "analytics", "ga4", "pagespeed", "tag manager"],
+    "type": "contao-bundle",
+    "license": "LGPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "pdir",
+            "homepage": "https://pdir.de"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "ext-sodium": "*",
+        "contao/core-bundle": "^5.3 || ^6.0",
+        "doctrine/dbal": "^3.6 || ^4.0",
+        "knplabs/knp-menu": "^3.1",
+        "symfony/cache-contracts": "^3.0",
+        "symfony/config": "^6.4 || ^7.4 || ^8.0",
+        "symfony/dependency-injection": "^6.4 || ^7.4 || ^8.0",
+        "symfony/event-dispatcher": "^6.4 || ^7.4 || ^8.0",
+        "symfony/http-client": "^6.4 || ^7.4 || ^8.0",
+        "symfony/http-client-contracts": "^3.0",
+        "symfony/http-foundation": "^6.4 || ^7.4 || ^8.0",
+        "symfony/http-kernel": "^6.4 || ^7.4 || ^8.0",
+        "symfony/routing": "^6.4 || ^7.4 || ^8.0",
+        "symfony/security-bundle": "^6.4 || ^7.4 || ^8.0",
+        "symfony/translation-contracts": "^3.0"
+    },
+    "require-dev": {
+        "contao/manager-plugin": "^2.13"
+    },
+    "conflict": {
+        "contao/manager-plugin": "<2.0 || >=3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pdir\\SiteKitBundle\\": "src/"
+        }
+    },
+    "extra": {
+        "contao-manager-plugin": "Pdir\\SiteKitBundle\\ContaoManager\\Plugin"
+    },
+    "config": {
+        "allow-plugins": {
+            "contao-components/installer": true,
+            "contao/manager-plugin": true,
+            "php-http/discovery": false
+        }
+    }
+}

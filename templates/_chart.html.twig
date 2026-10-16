@@ -1,0 +1,8 @@
+{% trans_default_domain 'pdir_site_kit' %}
+<figure class="sitekit-chart">
+    <figcaption>{{ label }} <span>({{ 'card.max'|trans }} {{ max }})</span></figcaption>
+    <svg viewBox="0 0 {{ chart.width }} {{ chart.height }}" preserveAspectRatio="none" role="img" aria-label="{{ label }}">
+        <path class="sitekit-chart__area" d="{{ chart.area }}"></path>
+        <path class="sitekit-chart__line" d="{{ chart.line }}" vector-effect="non-scaling-stroke"></path>
+    </svg>
+</figure>

@@ -1,0 +1,16 @@
+{% trans_default_domain 'pdir_site_kit' %}
+<dl class="sitekit-kpis">
+    {% for kpi in kpis %}
+        <div class="sitekit-kpi">
+            <dt>{{ (prefix ~ kpi.key)|trans }}</dt>
+            <dd>
+                <span class="sitekit-kpi__value">{{ kpi.value }}</span>
+                {% if kpi.change %}
+                    <span class="sitekit-kpi__change sitekit-kpi__change--{{ kpi.change.positive ? 'good' : 'bad' }}" title="{{ 'card.change_title'|trans }}">
+                        {{ kpi.change.direction == 'up' ? '↑' : (kpi.change.direction == 'down' ? '↓' : '→') }} {{ kpi.change.label }}
+                    </span>
+                {% endif %}
+            </dd>
+        </div>
+    {% endfor %}
+</dl>

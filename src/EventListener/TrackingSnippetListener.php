@@ -3,11 +3,9 @@
 declare(strict_types=1);
 
 /*
- * This file is part of pdir/contao-site-kit.
+ * Google Site Kit bundle for Contao Open Source CMS
  *
- * (c) pdir
- *
- * @license LGPL-3.0-or-later
+ * Copyright (C) pdir GmbH <develop@pdir.de>
  */
 
 namespace Pdir\SiteKitBundle\EventListener;

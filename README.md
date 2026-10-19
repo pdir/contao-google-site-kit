@@ -25,20 +25,20 @@ Das Bundle ist noch nicht auf Packagist. Bis dahin aus einem Git-Repository oder
 ```json
 {
     "repositories": [
-        { "type": "vcs", "url": "https://github.com/<organisation>/contao-site-kit" }
+        { "type": "vcs", "url": "https://github.com/pdir/contao-google-site-kit" }
     ],
     "require": {
-        "pdir/contao-site-kit": "dev-main"
+        "pdir/contao-google-site-kit": "dev-main"
     }
 }
 ```
 
-Für die lokale Entwicklung stattdessen `{ "type": "path", "url": "../contao-site-kit" }` verwenden.
+Für die lokale Entwicklung stattdessen `{ "type": "path", "url": "../contao-google-site-kit" }` verwenden.
 
 Danach:
 
 ```bash
-composer update pdir/contao-site-kit
+composer update pdir/contao-google-site-kit
 vendor/bin/contao-console contao:migrate    # legt tl_pdir_sitekit und die tl_page-Felder an
 vendor/bin/contao-console cache:clear
 ```
